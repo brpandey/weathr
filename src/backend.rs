@@ -45,11 +45,8 @@ pub struct WeatherList {
 impl WeatherList {
 
     #[inline]
-    pub fn parse(response: &str) -> Self {  // Result<WeatherList, Box<dyn Error>> {
-
-        let wdata = serde_json::from_str(&response).unwrap();
-
-        wdata
+    pub fn parse(response: &str) -> Result<WeatherList, Box<dyn Error>> {
+        serde_json::from_str(&response).map_err(From::from)
     }
 
     pub(crate) fn transform(&self) -> WeatherForecast {

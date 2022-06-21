@@ -20,7 +20,7 @@ fn main() -> Result<(), Box<dyn Error>> {
 //    dbg!(response);
 
     let response = weathr::mock_json::JSON_RESPONSE;
-    let data: WeatherList = WeatherList::parse(&response);
+    let data: WeatherList = WeatherList::parse(&response)?;
     let forecast: WeatherForecast = data.into();
 
     dbg!(forecast);
