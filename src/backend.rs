@@ -1,15 +1,19 @@
 extern crate chrono;
 
-use std::error::Error;
+
 use std::collections::BTreeMap;
+use std::collections::HashSet;
+use std::error::Error;
+use std::num::ParseIntError;
+use std::str::FromStr;
 use std::time::{UNIX_EPOCH, Duration};
 
 use serde::Deserialize;
-
 use chrono::prelude::DateTime;
 use chrono::{Utc};
 
 use crate::display::{WeatherForecast, WeatherSection};
+
 
 /*
 dt: 1655586000
@@ -48,19 +52,26 @@ impl WeatherList {
 
     #[inline]
     pub fn parse(response: &str) -> Result<WeatherList, Box<dyn Error>> {
-
         let data = serde_json::from_str(&response);
         data.map_err(From::from)
     }
 
+    // transforms raw weather list into weather forecast
     pub(crate) fn transform(&self) -> WeatherForecast {
 
-        let map: BTreeMap<String, Vec<WeatherSection>> = BTreeMap::new();
+        let mut map: BTreeMap<DayKey, Vec<WeatherSection>> = BTreeMap::new();
+        let exclude_hours: Vec<u8> = vec![0, 3];
+        let exclusion: HashSet<u8> = exclude_hours.into_iter().collect();  // merge only those hours not on the exclusion list
 
-        let list: Vec<(String, WeatherSection)> = self.list.iter().map(WeatherData::transform).collect();
+        let list: Vec<(DayKey, u8, WeatherSection)> = self.list.iter().map(WeatherData::transform).collect();
 
-        let map = list.into_iter().fold(map, |mut acc, (day, ws)| {
-            acc.entry(day).and_modify(|v| v.push(ws.clone())).or_insert(vec![ws.clone()]);
+        map = list.into_iter().fold(map, |mut acc, (day, hour, ws)| {
+            if !exclusion.contains(&hour) {
+                acc.entry(day)
+                    .and_modify(|v| v.push(ws.clone()))
+                    .or_insert(vec![ws.clone()]);
+            }
+
             acc
         });
 
@@ -69,6 +80,32 @@ impl WeatherList {
         WeatherForecast::new(self.city.to_string(), map)
     }
 }
+
+
+#[derive(Copy, Clone, Debug, Hash, Eq, Ord, PartialOrd, PartialEq)]
+pub struct DayKey {
+    month: u8,
+    day: u8,
+}
+
+impl ToString for DayKey {
+    fn to_string(&self) -> String {
+        format!("{:02}-{:02}", self.month, self.day)
+    }
+}
+
+impl FromStr for DayKey {
+    type Err = ParseIntError;
+
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        let tokens: Vec<&str> = s.split('-').collect();
+        let month = tokens[0].parse::<u8>()?;
+        let day = tokens[1].parse::<u8>()?;
+
+        Ok(DayKey { month, day })
+    }
+}
+
 
 
 #[derive(Deserialize, Debug)]
@@ -82,7 +119,7 @@ struct WeatherData {
 }
 
 impl WeatherData {
-    pub fn transform(&self) -> (String, WeatherSection) {
+    pub fn transform(&self) -> (DayKey, u8, WeatherSection) {
 
         // datetime
         let system_time = UNIX_EPOCH + Duration::from_secs(self.datetime);
@@ -90,12 +127,15 @@ impl WeatherData {
 
         // Formats the combined date and time with the specified format string.
         let timestamp: String = datetime.format("%Y-%m-%d %H:%M").to_string();
-        let day: String = datetime.format("%m-%d %a").to_string();
-        let hour: u8 = datetime.format("%H").to_string().parse().unwrap();
+        let day_of_week: String = datetime.format("%a").to_string();
+        let day_temp: String = datetime.format("%m-%d").to_string();
 
-        (day.clone(), WeatherSection::new(
-            day.clone(),
-            hour,
+        let day_key = DayKey::from_str(&day_temp).unwrap();
+        let hour_int: u8 = datetime.format("%H").to_string().parse().unwrap();
+
+        (day_key, hour_int, WeatherSection::new(
+            day_of_week,
+            hour_int,
             timestamp,
             self.main.temp,
             self.main.feels_like,

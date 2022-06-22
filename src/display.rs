@@ -1,10 +1,9 @@
 
 use std::fmt;
-use std::fmt::Write;
 
 use std::collections::BTreeMap;
 use tabular::{Table, Row};
-use crate::backend::WeatherList;
+use crate::backend::{WeatherList, DayKey};
 
 /*
 Flattened Structs
@@ -12,7 +11,7 @@ Flattened Structs
 
 #[derive(Debug, Clone)]
 pub(crate) struct WeatherSection {
-    day: String,
+    day_of_week: String,
     hour: u8,
     datetime: String,
     temp: f32,
@@ -28,12 +27,12 @@ pub(crate) struct WeatherSection {
 #[derive(Debug)]
 pub struct WeatherForecast {
     location: String,
-    days: BTreeMap<String, Vec<WeatherSection>>,
+    days: BTreeMap<DayKey, Vec<WeatherSection>>,
 }
 
 
 impl WeatherForecast {
-    pub(crate) fn new(location: String, days: BTreeMap<String, Vec<WeatherSection>>) -> Self {
+    pub(crate) fn new(location: String, days: BTreeMap<DayKey, Vec<WeatherSection>>) -> Self {
         WeatherForecast {
             location,
             days
@@ -51,8 +50,9 @@ impl fmt::Display for WeatherForecast {
         let mut table = Table::new("{:>}    {:<}  {:<}   {:>}   {:>}  {:>}    {:>}   {:<}");
 
         for (k,v) in self.days.iter() {
-            table.add_heading(format!("\n{}", &k));
-            table.add_heading("hour  temp    feel   hum   wspd  wdeg   rain   desc");
+
+            table.add_heading(format!("\n{}", &k.to_string()));
+            table.add_heading("day-hour  temp    feel   hum   wspd  wdeg   rain   desc");
 
             for section in v.iter() {
                 section.display(&mut table)
@@ -72,18 +72,18 @@ impl From<WeatherList> for WeatherForecast {
 
 impl WeatherSection {
     pub(crate) fn new(
-        day: String, hour: u8, datetime: String, temp: f32, feels_like: f32,
+        day_of_week: String, hour: u8, datetime: String, temp: f32, feels_like: f32,
         humidity: u16, description: String, wind_speed: f32, wind_deg: u16,
         rain_three_hour: Option<f32>,
     ) -> Self {
         WeatherSection {
-            day, hour, datetime, temp, feels_like, humidity,
+            day_of_week, hour, datetime, temp, feels_like, humidity,
             description, wind_speed, wind_deg, rain_three_hour
         }
     }
 
     pub(crate) fn display(&self, table: &mut Table) {
-        let hour = format!("{:02}", &self.hour);
+        let day_hour = format!("{}-{:02}", &self.day_of_week, &self.hour);
         let temp = format!("{:.2}", &self.temp);
         let feels = format!("{:.2}", &self.feels_like);
         let wspeed = format!("{:.2}", &self.wind_speed);
@@ -93,7 +93,7 @@ impl WeatherSection {
         let rainfall = format!("{:.2}", &rainfall_3h);
 
         table.add_row(Row::new()
-                      .with_cell(hour) // 1
+                      .with_cell(day_hour) // 1
                       .with_cell(temp) // 2
                       .with_cell(feels)  // 3
                       .with_cell(self.humidity) // 4
