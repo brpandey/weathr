@@ -1,7 +1,7 @@
 weathr
 ======= 
 
-
+```
 06-18
 day-hour  temp    feel   hum   wspd  wdeg   rain   desc
 Sat-21    92.41  90.88   30   21.43  236    0.22   light rain
@@ -49,3 +49,4 @@ Thu-09    83.32  83.57   46    7.92  120    0.00   overcast clouds
 Thu-12    83.03  82.94   44    7.83  111    0.00   overcast clouds
 Thu-15    88.14  86.65   34    6.60  122    0.00   overcast clouds
 Thu-18    95.56  93.45   25    3.65  177    0.00   broken clouds
+```
