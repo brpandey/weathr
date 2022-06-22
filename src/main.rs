@@ -1,5 +1,5 @@
 ﻿use weathr::backend::WeatherList;
-use weathr::backend::WeatherForecast;
+use weathr::display::WeatherForecast;
 
 use std::error::Error;
 
@@ -26,7 +26,7 @@ fn main() -> Result<(), Box<dyn Error>> {
 
 //    dbg!(forecast);
 
-    forecast.display();
+    println!("forecast is {}", forecast);
 
     Ok(())
 }
