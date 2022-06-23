@@ -12,7 +12,7 @@ fn main() -> Result<(), Box<dyn Error>> {
     dotenv().ok();
 
     let api_key: String = env::var("WEATHER_API_KEY").expect("export WEATHER_API_KEY=apikey not set");
-    let url = format!("https://api.openweathermap.org/data/2.5/forecast?q=Many&nbsp;Farms&appid={}&units=imperial", api_key);
+    let url = format!("https://api.openweathermap.org/data/2.5/forecast?q=Tucson&appid={}&units=imperial", api_key);
 
 //    dbg!(url);
 
