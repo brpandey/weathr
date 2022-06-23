@@ -77,8 +77,6 @@ impl WeatherList {
             acc
         });
 
-        println!("{:?}", &map);
-
         WeatherForecast::new(self.city.clone(), map)
     }
 }
@@ -199,7 +197,7 @@ impl ToString for City {
         let sunrise: String = datetime(self.sunrise, self.timezone);
         let sunset: String = datetime(self.sunset, self.timezone);
 
-        format!("{} {} [{}, {}],\nSunrise {}  Sunset {}", self.name, self.country, self.coord.lat, self.coord.lon, sunrise, sunset)
+        format!("{} {} [{}, {}]\nSunrise {}  Sunset {}", self.name, self.country, self.coord.lat, self.coord.lon, sunrise, sunset)
     }
 }
 
