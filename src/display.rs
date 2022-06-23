@@ -3,7 +3,7 @@ use std::fmt;
 
 use std::collections::BTreeMap;
 use tabular::{Table, Row};
-use crate::backend::{WeatherList, DayKey};
+use crate::backend::{WeatherList, DayKey, City};
 
 /*
 Flattened Structs
@@ -26,13 +26,13 @@ pub(crate) struct WeatherSection {
 
 #[derive(Debug)]
 pub struct WeatherForecast {
-    location: String,
+    location: City,
     days: BTreeMap<DayKey, Vec<WeatherSection>>,
 }
 
 
 impl WeatherForecast {
-    pub(crate) fn new(location: String, days: BTreeMap<DayKey, Vec<WeatherSection>>) -> Self {
+    pub(crate) fn new(location: City, days: BTreeMap<DayKey, Vec<WeatherSection>>) -> Self {
         WeatherForecast {
             location,
             days
@@ -48,6 +48,8 @@ impl fmt::Display for WeatherForecast {
         // Print each days table
         //                             1     2    3      4      5     6       7         8
         let mut table = Table::new("{:>}    {:<}  {:<}   {:>}   {:>}  {:>}    {:>}   {:<}");
+
+        table.add_heading(format!("\n{}", &self.location.to_string()));
 
         for (k,v) in self.days.iter() {
 

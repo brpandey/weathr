@@ -2,6 +2,9 @@ weathr
 ======= 
 
 ```
+Tucson US [32.2217, -110.9265],
+Sunrise 06-18 05:17  Sunset 06-18 19:32
+
 06-18
 day-hour  temp    feel   hum   wspd  wdeg   rain   desc
 Sat-21    92.41  90.88   30   21.43  236    0.22   light rain

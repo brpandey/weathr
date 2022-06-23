@@ -11,6 +11,8 @@ use std::time::{UNIX_EPOCH, Duration};
 use serde::Deserialize;
 use chrono::prelude::DateTime;
 use chrono::{Utc};
+use chrono::TimeZone;
+use chrono::FixedOffset;
 
 use crate::display::{WeatherForecast, WeatherSection};
 
@@ -77,7 +79,7 @@ impl WeatherList {
 
         println!("{:?}", &map);
 
-        WeatherForecast::new(self.city.to_string(), map)
+        WeatherForecast::new(self.city.clone(), map)
     }
 }
 
@@ -105,7 +107,6 @@ impl FromStr for DayKey {
         Ok(DayKey { month, day })
     }
 }
-
 
 
 #[derive(Deserialize, Debug)]
@@ -174,16 +175,39 @@ struct Rain {
 }
 
 
-#[derive(Deserialize, Debug)]
-struct City {
+#[derive(Clone, Deserialize, Debug)]
+pub struct City {
     name: String,
     country: String,
+    coord: Coord,
+    sunrise: u64,
+    sunset: u64,
+    timezone: i32,
 }
+
+
+#[derive(Copy, Clone, Deserialize, Debug)]
+struct Coord {
+    lat: f32,
+    lon: f32,
+}
+
 
 impl ToString for City {
     fn to_string(&self) -> String {
-        format!("{} {}", self.name, self.country)
+        // datetime
+        let sunrise: String = datetime(self.sunrise, self.timezone);
+        let sunset: String = datetime(self.sunset, self.timezone);
+
+        format!("{} {} [{}, {}],\nSunrise {}  Sunset {}", self.name, self.country, self.coord.lat, self.coord.lon, sunrise, sunset)
     }
 }
 
+pub fn datetime(value: u64, offset: i32) -> String {
+    let system_time = UNIX_EPOCH + Duration::from_secs(value);
+    let d = DateTime::<Utc>::from(system_time);
 
+    let tz: FixedOffset = if offset < 0 { FixedOffset::east(offset) } else { FixedOffset::west(offset) };
+    let dtz = d.with_timezone(&tz);
+    dtz.format("%m-%d %H:%M").to_string()
+}
