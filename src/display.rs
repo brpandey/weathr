@@ -10,6 +10,7 @@ use colored::Colorize;
 Flattened Structs
  */
 
+#[allow(dead_code)]
 #[derive(Debug, Clone)]
 pub(crate) struct WeatherSection {
     day_of_week: String,
@@ -53,7 +54,6 @@ impl fmt::Display for WeatherForecast {
         table.add_heading(loc);
 
         for (k,v) in self.days.iter() {
-
             table.add_heading(format!("\n{}", &k.to_string().italic().purple()));
             table.add_heading("day-hour  temp    feel   hum   wspd  wdeg   rain   desc");
 

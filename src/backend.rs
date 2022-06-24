@@ -11,7 +11,7 @@ use std::time::{UNIX_EPOCH, Duration};
 use serde::Deserialize;
 use chrono::prelude::DateTime;
 use chrono::{Utc};
-use chrono::TimeZone;
+//use chrono::TimeZone;
 use chrono::FixedOffset;
 
 use crate::display::{WeatherForecast, WeatherSection};
@@ -45,7 +45,7 @@ JSON "Strong-typed" parse into structs
 
 #[derive(Deserialize, Debug)]
 pub struct WeatherList {
-    cod: String,
+//    cod: String,
     list: Vec<WeatherData>,
     city: City,
 }
@@ -156,7 +156,6 @@ struct Temperature {
 
 #[derive(Deserialize, Debug)]
 struct Description {
-    main: String,
     description: String,
 }
 
@@ -205,7 +204,8 @@ pub fn datetime(value: u64, offset: i32) -> String {
     let system_time = UNIX_EPOCH + Duration::from_secs(value);
     let d = DateTime::<Utc>::from(system_time);
 
-    let tz: FixedOffset = if offset < 0 { FixedOffset::east(offset) } else { FixedOffset::west(offset) };
+    let tz: FixedOffset = FixedOffset::east(offset);
+    //let tz: FixedOffset = if offset < 0 { FixedOffset::east(offset) } else { FixedOffset::west(offset) };
     let dtz = d.with_timezone(&tz);
     dtz.format("%m-%d %H:%M").to_string()
 }
