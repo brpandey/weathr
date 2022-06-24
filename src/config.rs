@@ -1,5 +1,4 @@
 use clap::{App, Arg};
-use std::error::Error;
 
 #[derive(Debug)]
 pub struct WeatherConfig {
@@ -29,7 +28,7 @@ impl WeatherConfig {
         self.units.as_ref().map(|s| s.as_ref())
     }
 
-    pub fn load() -> Result<WeatherConfig, Box<dyn Error>> {
+    pub fn load() -> WeatherConfig {
         let matches = App::new("weathr")
             .version("0.1.0")
             .author("Bibek Pandey")
@@ -67,12 +66,10 @@ impl WeatherConfig {
             )
             .get_matches();
 
-        let config = WeatherConfig::new(
+        WeatherConfig::new(
             matches.value_of("location").unwrap().to_string(),
             matches.value_of("units").map(|s| s.to_string()),
             matches.is_present("debug"),
-        );
-
-        Ok(config)
+        )
     }
 }

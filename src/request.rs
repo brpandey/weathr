@@ -1,4 +1,3 @@
-use std::error::Error;
 use std::str::FromStr;
 use url::Url;
 use ureq;
@@ -28,7 +27,7 @@ impl Default for Location {
 }
 
 impl FromStr for Location {
-    type Err = std::convert::Infallible;
+    type Err = ApiError;
 
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         Ok(Self::City(s.to_owned()))
@@ -110,8 +109,7 @@ impl WeatherApi {
         }
     }
 
-
-    pub fn load(api_key: String, location: &str, units_opt: Option<&str>) -> Result<WeatherApi, Box<dyn Error>> {
+    pub fn load(api_key: String, location: &str, units_opt: Option<&str>) -> Result<WeatherApi, ApiError> {
         let loc = Location::from_str(location)?;
 
         let units = if let Some(u) = units_opt {
@@ -125,10 +123,8 @@ impl WeatherApi {
 
     fn url_construct(&self) -> Result<String, ApiError> {
         let mut url = Url::parse(BASE_API_URL)?;
-
-        // println!("WeatherApi is {:?}", &self);
-
         let endpoint = &self.endpoint.to_string();
+
         url.path_segments_mut().unwrap().push(endpoint);
 
         url.query_pairs_mut()

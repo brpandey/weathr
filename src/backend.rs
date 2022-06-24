@@ -2,7 +2,6 @@ extern crate chrono;
 
 use std::collections::BTreeMap;
 use std::collections::HashSet;
-use std::error::Error;
 use std::num::ParseIntError;
 use std::str::FromStr;
 use std::time::{UNIX_EPOCH, Duration};
@@ -24,7 +23,6 @@ use crate::display::{WeatherForecast, WeatherSection};
    weather: {
      main: "Rain",
      description: "light rain",
-     
    },
    wind: {
      speed: 21.43,
@@ -49,9 +47,8 @@ pub struct WeatherList {
 impl WeatherList {
 
     #[inline]
-    pub fn parse(response: &str) -> Result<WeatherList, Box<dyn Error>> {
-        let data = serde_json::from_str(&response);
-        data.map_err(From::from)
+    pub fn parse(response: &str) -> Result<WeatherList, serde_json::Error> {
+        serde_json::from_str(&response)
     }
 
     // transforms raw weather list into weather forecast

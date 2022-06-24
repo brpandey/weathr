@@ -14,7 +14,7 @@ fn main() -> Result<(), Box<dyn Error>> {
 
     let api_key: String = env::var("WEATHER_API_KEY").expect("export WEATHER_API_KEY= not set");
 
-    let config = WeatherConfig::load()?;
+    let config = WeatherConfig::load();
     let api = WeatherApi::load(api_key, config.location(), config.units())?;
 
     let response = api.request()?;
