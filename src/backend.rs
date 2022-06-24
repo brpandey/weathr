@@ -14,6 +14,8 @@ use chrono::FixedOffset;
 use crate::display::{WeatherForecast, WeatherSection};
 
 /*
+   Snippet of JSON data
+
    dt: 1655586000
    main: {
      temp: 92.41,
@@ -34,7 +36,8 @@ use crate::display::{WeatherForecast, WeatherSection};
 */
 
 /*
-JSON "Strong-typed" parse into structs
+  File contains raw structs that directly map to json parse
+  (Serde JSON "Strongly typed" structs parse)
 */
 
 #[derive(Deserialize, Debug)]
@@ -55,10 +58,12 @@ impl WeatherList {
     pub(crate) fn transform(&self) -> WeatherForecast {
         let mut map: BTreeMap<DayKey, Vec<WeatherSection>> = BTreeMap::new();
         let exclude_hours: Vec<u8> = vec![0, 3];
-        let exclusion: HashSet<u8> = exclude_hours.into_iter().collect();  // merge only those hours not on the exclusion list
+        let exclusion: HashSet<u8> = exclude_hours.into_iter().collect();  
 
         let list: Vec<(DayKey, u8, WeatherSection)> = self.list.iter().map(WeatherData::transform).collect();
 
+        // merge only those hours not on the exclusion list
+        // store WeatherSection by day key
         map = list.into_iter().fold(map, |mut acc, (day, hour, ws)| {
             if !exclusion.contains(&hour) {
                 acc.entry(day)
@@ -74,6 +79,7 @@ impl WeatherList {
 }
 
 
+// Simple struct that serves as an accurate key to group weather sections
 #[derive(Copy, Clone, Debug, Hash, Eq, Ord, PartialOrd, PartialEq)]
 pub struct DayKey {
     month: u8,
@@ -98,7 +104,7 @@ impl FromStr for DayKey {
     }
 }
 
-
+// Main JSON Serde mapped struct for each weather data point
 #[derive(Deserialize, Debug)]
 struct WeatherData {
     #[serde(rename = "dt")] 
@@ -110,6 +116,7 @@ struct WeatherData {
 }
 
 impl WeatherData {
+    // Flatten WeatherData and transform into WeatherSection
     pub fn transform(&self) -> (DayKey, u8, WeatherSection) {
         // datetime
         let system_time = UNIX_EPOCH + Duration::from_secs(self.datetime);
@@ -162,7 +169,6 @@ struct Rain {
     three_hour: f32,
 }
 
-
 #[derive(Clone, Deserialize, Debug)]
 pub struct City {
     name: String,
@@ -191,10 +197,11 @@ impl ToString for City {
     }
 }
 
+// Helper utility method
 pub fn datetime(value: u64, offset: i32) -> String {
     let system_time = UNIX_EPOCH + Duration::from_secs(value);
     let d = DateTime::<Utc>::from(system_time);
-
+    
     let tz: FixedOffset = FixedOffset::east(offset);
     let dtz = d.with_timezone(&tz);
     dtz.format("%m-%d %H:%M").to_string()

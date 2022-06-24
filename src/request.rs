@@ -2,6 +2,11 @@ use std::str::FromStr;
 use url::Url;
 use ureq;
 
+// Module serves to wrap functionality around placing
+// a HTTP request.
+
+// Currently only tailored to one web service
+
 #[derive(Debug)]
 pub enum Endpoint {
     CurrentWeather,
@@ -57,6 +62,12 @@ impl FromStr for Units {
     }
 }
 
+// Custom Error enum that provides relevant detail
+// as an alternative over Box<dyn Error> which must
+// use type downcasting to extract original error info
+
+// error macro annotation simplifies implementation of
+// Debug/Display traits required by the Error trait
 #[derive(Debug, thiserror::Error)]
 pub enum ApiError {
     #[error("Request error")]
@@ -69,6 +80,10 @@ pub enum ApiError {
     BadParse(&'static str),
 
 }
+
+
+// Defines data and functionality to place an HTTP GET request
+// Extensible to add new endpoints, and other restful param types
 
 #[derive(Debug)]
 pub struct WeatherApi {
@@ -109,6 +124,7 @@ impl WeatherApi {
         }
     }
 
+    // Generate WeatherApi given api_key and user supplied cli args
     pub fn load(api_key: String, location: &str, units_opt: Option<&str>) -> Result<WeatherApi, ApiError> {
         let loc = Location::from_str(location)?;
 
@@ -121,6 +137,7 @@ impl WeatherApi {
         Ok(WeatherApi::new(api_key, loc, units))
     }
 
+    // Generate final url given api parameters
     fn url_construct(&self) -> Result<String, ApiError> {
         let mut url = Url::parse(BASE_API_URL)?;
         let endpoint = &self.endpoint.to_string();
@@ -135,6 +152,7 @@ impl WeatherApi {
         Ok(url.to_string())
     }
 
+    // Places HTTP get (blocking) call using ureq
     pub fn request(&self) -> Result<String, ApiError> {
         let url = self.url_construct()?;
         let response = ureq::get(&url).call()?.into_string()?;

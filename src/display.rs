@@ -8,7 +8,7 @@ use crate::backend::{WeatherList, DayKey, City};
 
 
 /*
-Flattened Structs
+Flattened Structs and partially normalized
  */
 
 #[allow(dead_code)]
@@ -26,7 +26,7 @@ pub(crate) struct WeatherSection {
     rain_three_hour: Option<f32>,
 }
 
-
+// Final resultant top-level Weather struct to be used for output display
 #[derive(Debug)]
 pub struct WeatherForecast {
     location: City,
@@ -44,7 +44,7 @@ impl WeatherForecast {
 }
 
 
-// Implement `Display` for `WeatherForecast`.
+// Implement `Display` for `WeatherForecast` using tabular
 impl fmt::Display for WeatherForecast {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         // Print each days table
@@ -86,6 +86,7 @@ impl WeatherSection {
         }
     }
 
+    // Implicit override of fmt::Display since it accepts table
     pub(crate) fn display(&self, table: &mut Table) {
         let day_hour = format!("{}-{:02}", &self.day_of_week, &self.hour).bold();
         let temp = format!("{:.2}", &self.temp).yellow();

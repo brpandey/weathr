@@ -1,3 +1,7 @@
+
+// JSON Snippets use for development
+
+
 pub const JSON_RESPONSE_MICRO: &str = "{\"cod\":\"200\",\"message\":0,\"cnt\":40,\"list\":[{\"dt\":1655586000,\"main\":{\"temp\":92.41,\"feels_like\":90.88,\"temp_min\":91.06,\"temp_max\":92.41,\"pressure\":1011,\"sea_level\":1011,\"grnd_level\":927,\"humidity\":30,\"temp_kf\":0.75},\"weather\":[{\"id\":500,\"main\":\"Rain\",\"description\":\"light rain\",\"icon\":\"10d\"}],\"clouds\":{\"all\":75},\"wind\":{\"speed\":21.43,\"deg\":236,\"gust\":21.74},\"visibility\":10000,\"pop\":0.45,\"rain\":{\"3h\":0.22},\"sys\":{\"pod\":\"d\"},\"dt_txt\":\"2022-06-18 21:00:00\"}]}";
 
 

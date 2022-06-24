@@ -4,7 +4,7 @@ weathr
 > cargo run -- -h
 weathr 0.1.0
 Bibek Pandey
-Simple CLI Weather App
+Simple CLI Weather App using OpenWeatherMap
 
 ```
 USAGE:

@@ -1,5 +1,7 @@
 use clap::{App, Arg};
 
+// Wrapper around correctly matched user supplied args
+
 #[derive(Debug)]
 pub struct WeatherConfig {
     location: String,
@@ -16,23 +18,27 @@ impl WeatherConfig {
         }
     }
 
+    #[inline]
     pub fn debug(&self) -> bool {
         self.debug
     }
 
+    #[inline]
     pub fn location(&self) -> &str {
         self.location.as_ref()
     }
 
+    #[inline]
     pub fn units(&self) -> Option<&str> {
         self.units.as_ref().map(|s| s.as_ref())
     }
 
+    // Match the params expected with the params actually given using clap
     pub fn load() -> WeatherConfig {
         let matches = App::new("weathr")
             .version("0.1.0")
             .author("Bibek Pandey")
-            .about("Simple CLI Weather App")
+            .about("Simple CLI Weather App using OpenWeatherMap")
             .arg(
                 Arg::with_name("location")
                     .takes_value(true)
@@ -66,6 +72,7 @@ impl WeatherConfig {
             )
             .get_matches();
 
+        // Unpack the args that have matched successfully and capture in Config
         WeatherConfig::new(
             matches.value_of("location").unwrap().to_string(),
             matches.value_of("units").map(|s| s.to_string()),
