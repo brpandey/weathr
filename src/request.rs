@@ -27,16 +27,6 @@ impl Default for Location {
     fn default() -> Self { Location::City(String::from("London")) }
 }
 
-/*
-impl ToString for Location {
-    fn to_string(&self) -> String {
-        match self {
-            Self::City(ref name) => name.clone()
-        }
-    }
-}
-*/
-
 impl FromStr for Location {
     type Err = std::convert::Infallible;
 
@@ -44,7 +34,6 @@ impl FromStr for Location {
         Ok(Self::City(s.to_owned()))
     }
 }
-
 
 
 #[derive(Debug)]
@@ -57,17 +46,6 @@ impl Default for Units {
     fn default() -> Self { Units::Imperial }
 }
 
-/*
-impl ToString for Units {
-    fn to_string(&self) -> String {
-        match self {
-            Self::Metric => String::from("metric"),
-            Self::Imperial => String::from("imperial"),
-        }
-    }
-}
-*/
-
 impl FromStr for Units {
     type Err = ApiError;
 
@@ -79,7 +57,6 @@ impl FromStr for Units {
         }
     }
 }
-
 
 #[derive(Debug, thiserror::Error)]
 pub enum ApiError {

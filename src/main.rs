@@ -1,7 +1,5 @@
 ﻿use std::env;
 use std::error::Error;
-
-
 use dotenv::dotenv;
 
 use weathr::config::WeatherConfig;

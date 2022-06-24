@@ -1,10 +1,11 @@
-
 use std::fmt;
-
 use std::collections::BTreeMap;
-use tabular::{Table, Row};
-use crate::backend::{WeatherList, DayKey, City};
+
 use colored::Colorize;
+use tabular::{Table, Row};
+
+use crate::backend::{WeatherList, DayKey, City};
+
 
 /*
 Flattened Structs

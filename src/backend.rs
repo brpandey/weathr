@@ -1,6 +1,5 @@
 extern crate chrono;
 
-
 use std::collections::BTreeMap;
 use std::collections::HashSet;
 use std::error::Error;
@@ -11,18 +10,16 @@ use std::time::{UNIX_EPOCH, Duration};
 use serde::Deserialize;
 use chrono::prelude::DateTime;
 use chrono::{Utc};
-//use chrono::TimeZone;
 use chrono::FixedOffset;
 
 use crate::display::{WeatherForecast, WeatherSection};
 
-
 /*
-dt: 1655586000
-main: {
-temp: 92.41,
-feels_like: 90.88,
-humidity: 30
+   dt: 1655586000
+   main: {
+     temp: 92.41,
+     feels_like: 90.88,
+     humidity: 30
    },
    weather: {
      main: "Rain",
@@ -37,7 +34,6 @@ humidity: 30
      3h: 0.22
    },
 */
-
 
 /*
 JSON "Strong-typed" parse into structs
@@ -60,7 +56,6 @@ impl WeatherList {
 
     // transforms raw weather list into weather forecast
     pub(crate) fn transform(&self) -> WeatherForecast {
-
         let mut map: BTreeMap<DayKey, Vec<WeatherSection>> = BTreeMap::new();
         let exclude_hours: Vec<u8> = vec![0, 3];
         let exclusion: HashSet<u8> = exclude_hours.into_iter().collect();  // merge only those hours not on the exclusion list
@@ -119,7 +114,6 @@ struct WeatherData {
 
 impl WeatherData {
     pub fn transform(&self) -> (DayKey, u8, WeatherSection) {
-
         // datetime
         let system_time = UNIX_EPOCH + Duration::from_secs(self.datetime);
         let datetime = DateTime::<Utc>::from(system_time);
@@ -205,7 +199,6 @@ pub fn datetime(value: u64, offset: i32) -> String {
     let d = DateTime::<Utc>::from(system_time);
 
     let tz: FixedOffset = FixedOffset::east(offset);
-    //let tz: FixedOffset = if offset < 0 { FixedOffset::east(offset) } else { FixedOffset::west(offset) };
     let dtz = d.with_timezone(&tz);
     dtz.format("%m-%d %H:%M").to_string()
 }

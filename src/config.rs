@@ -8,9 +8,7 @@ pub struct WeatherConfig {
     debug: bool,
 }
 
-
 impl WeatherConfig {
-
     fn new(location: String, units: Option<String>, debug: bool) -> Self {
         WeatherConfig {
             location,
@@ -30,7 +28,6 @@ impl WeatherConfig {
     pub fn units(&self) -> Option<&str> {
         self.units.as_ref().map(|s| s.as_ref())
     }
-
 
     pub fn load() -> Result<WeatherConfig, Box<dyn Error>> {
         let matches = App::new("weathr")
