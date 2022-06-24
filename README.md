@@ -2,8 +2,6 @@ weathr
 ======= 
 
 > cargo run -- -h
-    Finished dev [unoptimized + debuginfo] target(s) in 0.09s
-     Running `target/debug/weathr -h`
 weathr 0.1.0
 Bibek Pandey
 Simple CLI Weather App
