@@ -1,5 +1,3 @@
-extern crate chrono;
-
 use std::collections::BTreeMap;
 use std::collections::HashSet;
 use std::num::ParseIntError;
