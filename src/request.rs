@@ -12,10 +12,10 @@ pub enum Endpoint {
     CurrentWeather,
 }
 
-impl ToString for Endpoint {
-    fn to_string(&self) -> String {
+impl Endpoint {
+    fn value(&self) -> &str {
         match self {
-            Self::CurrentWeather => String::from("forecast")
+            Self::CurrentWeather => "forecast"
         }
     }
 }
@@ -140,7 +140,7 @@ impl WeatherApi {
     // Generate final url given api parameters
     fn url_construct(&self) -> Result<String, ApiError> {
         let mut url = Url::parse(BASE_API_URL)?;
-        let endpoint = &self.endpoint.to_string();
+        let endpoint = self.endpoint.value();
 
         url.path_segments_mut().unwrap().push(endpoint);
 
