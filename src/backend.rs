@@ -49,7 +49,7 @@ impl WeatherList {
 
     #[inline]
     pub fn parse(response: &str) -> Result<WeatherList, serde_json::Error> {
-        serde_json::from_str(&response)
+        serde_json::from_str(response)
     }
 
     // transforms raw weather list into weather forecast
@@ -66,7 +66,7 @@ impl WeatherList {
             if !exclusion.contains(&hour) {
                 acc.entry(day)
                     .and_modify(|v| v.push(ws.clone()))
-                    .or_insert(vec![ws.clone()]);
+                    .or_insert_with(|| vec![ws.clone()]);
             }
 
             acc

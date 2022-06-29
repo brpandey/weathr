@@ -129,7 +129,7 @@ impl WeatherApi {
         let loc = Location::from_str(location)?;
 
         let units = if let Some(u) = units_opt {
-            Units::from_str(u).unwrap_or(Units::default())
+            Units::from_str(u).unwrap_or_default()
         } else {
             Units::default()
         };

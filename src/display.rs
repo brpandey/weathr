@@ -54,11 +54,11 @@ impl fmt::Display for WeatherForecast {
         let loc = format!("\n{}", &self.location.to_string().cyan().bold());
         table.add_heading(loc);
 
-        for (k,v) in self.days.iter() {
+        for (k,v) in &self.days {
             table.add_heading(format!("\n{}", &k.to_string().italic().purple()));
             table.add_heading("day-hour  temp    feel   hum   wspd  wdeg   rain   desc");
 
-            for section in v.iter() {
+            for section in v {
                 section.display(&mut table)
             }
         }
@@ -96,7 +96,7 @@ impl WeatherSection {
         let wdeg = format!("{:03}", &self.wind_deg).blue().on_bright_blue();
         let rainfall_3h: f32 = self.rain_three_hour.unwrap_or_default();
         let rainfall = format!("{:.2}", &rainfall_3h).blue().italic().on_bright_white();
-        let desc = format!("{}", &self.description).bright_green().bold().italic();
+        let desc = &self.description.bright_green().bold().italic();
 
         table.add_row(Row::new()
                       .with_cell(day_hour) // 1
