@@ -2,15 +2,15 @@ weathr
 ======= 
 
 Setup - Obtain API key
-1. First create an [account](https://openweathermap.org/)
-2. Second export free subscriber api key as env variable, e.g. export WEATHER_API_KEY="<YOUR_FREE_API_TOKEN>"
+1. Create an [account](https://openweathermap.org/)
+2. Export free subscriber api key as env variable, e.g. export WEATHER_API_KEY="<API_TOKEN>"
 
+```sh
 > cargo run -- -h
 weathr 0.1.0
 Bibek Pandey
 Simple CLI Weather App using OpenWeatherMap
 
-```
 USAGE:
     weathr [OPTIONS] --location <location>
 
